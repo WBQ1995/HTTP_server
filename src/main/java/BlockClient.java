@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 import java.util.Scanner;
 
-public class BlockClinet {
+public class BlockClient {
 
     public static void main(String[] args) throws IOException {
         clientStart();
@@ -17,6 +17,7 @@ public class BlockClinet {
         InetSocketAddress serverAdress = new InetSocketAddress(host,port);
 
         SocketChannel clientSocketChannel = SocketChannel.open();
+        clientSocketChannel.configureBlocking(false);
         clientSocketChannel.connect(serverAdress);
         if(clientSocketChannel.finishConnect()){
             System.out.println("Connect to server successfully...");

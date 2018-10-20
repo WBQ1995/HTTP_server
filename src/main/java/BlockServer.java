@@ -14,7 +14,7 @@ public class BlockServer {
         int port = 8008;
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(new InetSocketAddress(port));
-        System.out.println("Server start listening..");
+        System.out.println("Server ready...");
 
         ByteBuffer buffer = ByteBuffer.allocate(1024);
         ByteBuffer sendBuffer = ByteBuffer.allocate(1024);
