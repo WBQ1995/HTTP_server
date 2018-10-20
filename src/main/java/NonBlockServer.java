@@ -43,8 +43,6 @@ public class NonBlockServer {
                 } else if(key.isReadable()){
                     System.out.println("NEW MESSAGE:\n");
                     handleRead(key);
-                } else if(key.isWritable()){
-                    handleWrite(key);
                 } else if(key.isConnectable()){
                     System.out.println("isConnectable = true");
                 }
@@ -82,12 +80,12 @@ public class NonBlockServer {
             }
             System.out.println("\n");
             buffer.clear();
+
+            //response according to the message received
+            buffer.put("ACK".getBytes());
+            buffer.flip();
+            clientSocketChannel.write(buffer);
+            buffer.clear();
         }
-
     }
-
-    private static void handleWrite(SelectionKey key){
-
-    }
-
 }

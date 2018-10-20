@@ -42,10 +42,7 @@ public class BlockServer {
                 System.out.println();
                 buffer.clear();
 
-                sendBuffer.put((byte)'.');
-                sendBuffer.put((byte)'B');
-                sendBuffer.put((byte)'Y');
-                sendBuffer.put((byte)'E');
+                sendBuffer.put(".BYE".getBytes());
 
                 sendBuffer.flip();
                 clientSocketChanel.write(sendBuffer);

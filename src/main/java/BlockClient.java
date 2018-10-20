@@ -46,18 +46,21 @@ public class BlockClient {
     private static void receive(SocketChannel clientSocketChannel) throws IOException{
 
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        long bytesRead = clientSocketChannel.read(buffer);
+        long bytesRead;
 
-        if(bytesRead == -1)
-            return;
 
-        if (bytesRead > 0){
-            buffer.flip();
-            while (buffer.hasRemaining()){
-                System.out.print((char)buffer.get());
+        while (true){
+            bytesRead = clientSocketChannel.read(buffer);
+            if (bytesRead > 0){
+                buffer.flip();
+                while (buffer.hasRemaining()){
+                    System.out.print((char)buffer.get());
+                }
+                System.out.println();
+                buffer.clear();
+                return;
             }
-            System.out.println();
-            buffer.clear();
         }
+
     }
 }
