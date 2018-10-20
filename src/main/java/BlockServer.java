@@ -7,7 +7,10 @@ import java.nio.channels.SocketChannel;
 public class BlockServer {
 
     public static void main(String[] args) throws IOException {
+        serverStart();
+    }
 
+    private static void serverStart() throws IOException {
         int port = 8008;
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(new InetSocketAddress(port));
@@ -50,4 +53,5 @@ public class BlockServer {
             }
         }
     }
+
 }

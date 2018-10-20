@@ -7,7 +7,10 @@ import java.util.Scanner;
 public class BlockClinet {
 
     public static void main(String[] args) throws IOException {
+        clientStart();
+    }
 
+    private static void clientStart() throws IOException {
         String host = "127.0.0.1";
         int port = 8008;
 
