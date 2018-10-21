@@ -58,7 +58,11 @@ public class Processor {
             return;
         }
         for (File files : filesList){
-            response += files.getName() + "\n";
+
+            if(files.isDirectory())
+                response += files.getName() + "/" + "\n";
+            else
+                response += files.getName() + "\n";
         }
     }
 
