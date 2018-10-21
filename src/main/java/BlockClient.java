@@ -35,7 +35,7 @@ public class BlockClient {
             buffer.flip();
             clientSocketChannel.write(buffer);
 
-            if(line.startsWith("0")){
+            if(line.startsWith("*")){
                 clientSocketChannel.close();
                 System.exit(0);
             }
