@@ -44,7 +44,7 @@ public class NonBlockServer {
                     System.out.println("NEW CLIENT\n");
                     handleAccept(key);
                 } else if(key.isReadable()){
-                    System.out.println("NEW MESSAGE:\n");
+                    //System.out.println("NEW MESSAGE:\n");
                     handleRead(key);
                 } else if(key.isConnectable()){
                     System.out.println("isConnectable = true");
