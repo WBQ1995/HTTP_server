@@ -10,19 +10,21 @@ import java.util.Iterator;
 public class NonBlockServer {
 
     private static final int BUF_SIZE = 1024;
-    private static final int PORT = 8008;
     private static final int TIMEOUT = 3000;
+    private int port = 8008;
+    private String path = "/";
 
-    public static void main(String[] args) throws IOException {
-        startServer();
+
+    public NonBlockServer() throws IOException {
+        //startServer();
     }
 
-    private static void startServer() throws IOException{
+    public void startServer() throws IOException{
 
         Selector selector = Selector.open();
 
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-        serverSocketChannel.socket().bind(new InetSocketAddress(PORT));
+        serverSocketChannel.socket().bind(new InetSocketAddress(port));
 
         System.out.println("Server ready...");
 
@@ -51,7 +53,7 @@ public class NonBlockServer {
         }
     }
 
-    private static void handleAccept(SelectionKey key) throws IOException{
+    private void handleAccept(SelectionKey key) throws IOException{
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
         SocketChannel clientSocketChannel = serverSocketChannel.accept();
         clientSocketChannel.configureBlocking(false);
@@ -59,9 +61,11 @@ public class NonBlockServer {
 
     }
 
-    private static void handleRead(SelectionKey key) throws IOException{
+    private void handleRead(SelectionKey key) throws IOException{
         SocketChannel clientSocketChannel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(1024);
+        String request = "";
+        String response;
 
         while (true) {
             long bytesRead = clientSocketChannel.read(buffer);
@@ -76,16 +80,35 @@ public class NonBlockServer {
                     clientSocketChannel.close();
                     return;
                 }
-                System.out.print(c);
+                request += c;
             }
-            System.out.println("\n");
+            System.out.println(request + "\n");
             buffer.clear();
-
             //response according to the message received
-            buffer.put("ACK".getBytes());
+            Processor processor = new Processor(request,path);
+
+            response = processor.getResponse();
+
+            buffer.put(response.getBytes());
             buffer.flip();
             clientSocketChannel.write(buffer);
             buffer.clear();
         }
     }
+
+
+
+
+    public void setPort(int port){
+        this.port = port;
+    }
+
+    public void setPath(String path){
+        this.path = path;
+    }
+
+    public String getPath(){
+        return this.path;
+    }
+
 }
