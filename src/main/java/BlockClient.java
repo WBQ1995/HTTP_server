@@ -10,6 +10,32 @@ public class BlockClient {
         clientStart();
     }
 
+    public boolean testSending(String request) throws IOException{
+
+        String host = "127.0.0.1";
+        int port = 8008;
+
+        InetSocketAddress serverAdress = new InetSocketAddress(host,port);
+
+        SocketChannel clientSocketChannel = SocketChannel.open();
+        clientSocketChannel.configureBlocking(false);
+        clientSocketChannel.connect(serverAdress);
+        if(clientSocketChannel.finishConnect()){
+            System.out.println("Connect to server successfully...");
+        }
+        System.out.println();
+
+        ByteBuffer buffer = ByteBuffer.allocate(1024);
+
+        buffer.put(request.getBytes());
+        buffer.flip();
+        clientSocketChannel.write(buffer);
+        receive(clientSocketChannel);
+
+        //clientSocketChannel.close();
+        return true;
+    }
+
     private static void clientStart() throws IOException {
         String host = "127.0.0.1";
         int port = 8008;
