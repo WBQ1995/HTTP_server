@@ -17,17 +17,21 @@ public class Processor {
     }
 
     public String getResponse(){
-
         if(request.startsWith("GET")) {
-            readFiles();
+            processGet();
             return response;
         }
-        return "";
+        return " ";
     }
 
     private void processGet(){
+
+        String[] bodies = request.split("\r\n");
+
         if(request.endsWith("/")){
             readFiles();
+        } else {
+
         }
     }
 

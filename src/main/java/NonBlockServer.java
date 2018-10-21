@@ -11,12 +11,13 @@ public class NonBlockServer {
 
     private static final int BUF_SIZE = 1024;
     private static final int TIMEOUT = 3000;
-    private int port = 8008;
-    private String path = "/";
+    private int port;
+    private String path;
 
 
     public NonBlockServer() throws IOException {
-        //startServer();
+        port = 8008;
+        path = "/";
     }
 
     public void startServer() throws IOException{
