@@ -19,9 +19,17 @@ public class Processor {
     public String getResponse(){
         if(request.startsWith("GET")) {
             processGet();
-
+        } else if(request.startsWith("POST")){
+            processPost();
+        } else {
+            response = "HTTP/1.0 400 Bad Request";
         }
         return response;
+    }
+
+    //TODO: DEAL WITH POST
+    private void processPost(){
+
     }
 
     private void processGet(){
