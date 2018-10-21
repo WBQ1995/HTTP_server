@@ -75,12 +75,14 @@ public class NonBlockServer {
                 return;
 
             buffer.flip();
+
+            if(buffer.get(0) == '*'){
+                clientSocketChannel.close();
+                return;
+            }
+
             while (buffer.hasRemaining()){
                 char c = (char)buffer.get();
-                if(c == '0'){
-                    clientSocketChannel.close();
-                    return;
-                }
                 request += c;
             }
             System.out.println(request + "\n");
