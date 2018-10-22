@@ -15,7 +15,7 @@ public class NonBlockServer {
     private String path;
 
 
-    public NonBlockServer() throws IOException {
+    public NonBlockServer() {
         port = 8008;
         path = "/";
     }

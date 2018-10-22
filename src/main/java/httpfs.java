@@ -5,16 +5,13 @@ public class httpfs {
 
     public static void main(String[] args){
 
+
+        NonBlockServer server = new NonBlockServer();
+        setArgs(server, args);
         try {
-
-            NonBlockServer server = new NonBlockServer();
-
-            setArgs(server, args);
-
             server.startServer();
-
         } catch (Exception ex){
-            System.out.println(ex.getMessage());
+            System.out.println("Server failed to open...");
         }
 
     }
