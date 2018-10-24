@@ -18,6 +18,12 @@ public class Processor {
     }
 
     public Response getResponse(){
+
+        if(!request.getVersion().equals("HTTP/1.0")){
+            response.setState("505 HTTP Version Not Supported");
+            return response;
+        }
+
         if(request.isGet()) {
             processGet();
         } else {
@@ -29,14 +35,18 @@ public class Processor {
     //TODO: DEAL WITH POST
     private void processPost(){
 
+        path += request.getFilePath();
+        try {
+            FileWriter fileWriter = new FileWriter(path,true);
+            fileWriter.write(request.getBody());
+            fileWriter.close();
+            response.setState("200 OK");
+        } catch (IOException ex){
+            response.setState("403 Forbidden");
+        }
     }
 
     private void processGet(){
-
-        if(!request.getVersion().equals("HTTP/1.0")){
-            response.setState("505 HTTP Version Not Supported");
-            return;
-        }
 
         response.setState("200 OK");
 
