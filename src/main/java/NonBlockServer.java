@@ -14,7 +14,6 @@ public class NonBlockServer {
     private int port;
     private String path;
 
-
     public NonBlockServer() {
         port = 8008;
         path = "/";
@@ -65,8 +64,7 @@ public class NonBlockServer {
     private void handleRead(SelectionKey key) throws IOException{
         SocketChannel clientSocketChannel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(1024);
-        String request = "";
-        String response;
+        String receiveData = "";
 
         while (true) {
             long bytesRead = clientSocketChannel.read(buffer);
@@ -83,24 +81,23 @@ public class NonBlockServer {
 
             while (buffer.hasRemaining()){
                 char c = (char)buffer.get();
-                request += c;
+                receiveData += c;
             }
-            System.out.println(request + "\n");
+            System.out.println(receiveData + "\n");
             buffer.clear();
-            //response according to the message received
-            Processor processor = new Processor(request,path);
-
-            response = processor.getResponse();
-
-            buffer.put(response.getBytes());
+            Request request = new Request(receiveData);
+            if(request.isValidRequest()) {
+                //response according to the message received
+                Processor processor = new Processor(request, path);
+                buffer.put(processor.getResponse().toString().getBytes());
+            } else {
+                buffer.put("HTTP/1.0 400 Bad Request".getBytes());
+            }
             buffer.flip();
             clientSocketChannel.write(buffer);
             buffer.clear();
         }
     }
-
-
-
 
     public void setPort(int port){
         this.port = port;
