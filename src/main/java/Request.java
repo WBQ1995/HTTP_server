@@ -23,7 +23,7 @@ public class Request {
 
     private void parse() throws Exception{
 
-        String[] headerAndBody = fromClient.split("\n\n");
+        String[] headerAndBody = fromClient.split("\r\n\r\n");
         if(headerAndBody.length > 2){
             validRequest = false;
             return;
@@ -61,7 +61,7 @@ public class Request {
         }
     }
 
-    public void toSTring(){
+    public void print(){
         System.out.println("method " + filePath + " HTTP/1.0");
         for (String key : headers.keySet()) {
             System.out.println(key + ":" + headers.get(key));
@@ -73,7 +73,6 @@ public class Request {
     public boolean isValidRequest(){
         return validRequest;
     }
-
 
     public boolean isGet() {
         return isGet;
