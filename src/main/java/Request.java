@@ -7,8 +7,9 @@ public class Request {
     private HashMap<String,String> headers;
     private String body;
     private String fromClient;
+    private String version;
 
-    private boolean validRequest;
+    private boolean validRequest = true;
 
     public Request(String fromClient) {
         headers = new HashMap<>();
@@ -33,7 +34,7 @@ public class Request {
         String[] requestLineAndHeaders = headerAndBody[0].split("\r\n");
         String requestLine = requestLineAndHeaders[0];
         String[] elements = requestLine.split(" ");
-        if(elements.length != 3 || !elements[2].equals("HTTP/1.0")){
+        if(elements.length != 3){
             validRequest = false;
             return;
         }
@@ -48,12 +49,13 @@ public class Request {
         }
 
         filePath = elements[1];
+        version = elements[2];
 
         if(requestLineAndHeaders.length > 1){
             for(int i = 1; i < requestLineAndHeaders.length; i ++){
                 int index = requestLineAndHeaders[i].indexOf(":");
                 String front = requestLineAndHeaders[i].substring(0,index);
-                String end = requestLineAndHeaders[i].substring(index + 2, requestLineAndHeaders[i].length());
+                String end = requestLineAndHeaders[i].substring(index + 1, requestLineAndHeaders[i].length());
                 headers.put(front,end);
             }
         }
@@ -88,4 +90,9 @@ public class Request {
     public String getBody() {
         return body;
     }
+
+    public String getVersion(){
+        return version;
+    }
+
 }
