@@ -13,6 +13,7 @@ public class NonBlockServer {
     private static final int TIMEOUT = 3000;
     private int port;
     private String path;
+    private Boolean debugging = false;
 
     public NonBlockServer() {
         port = 8008;
@@ -26,7 +27,9 @@ public class NonBlockServer {
         ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
         serverSocketChannel.socket().bind(new InetSocketAddress(port));
 
-        System.out.println("Server ready...");
+        if(debugging) {
+            System.out.println("Server ready...");
+        }
 
         serverSocketChannel.configureBlocking(false);
         serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
@@ -40,13 +43,17 @@ public class NonBlockServer {
             while(iterator.hasNext()){
                 SelectionKey key = iterator.next();
                 if(key.isAcceptable()){
-                    System.out.println("NEW CLIENT\n");
                     handleAccept(key);
+                    if(debugging) {
+                        System.out.println("NEW CLIENT\n");
+                    }
                 } else if(key.isReadable()){
                     //System.out.println("NEW MESSAGE:\n");
                     handleRead(key);
                 } else if(key.isConnectable()){
-                    System.out.println("isConnectable = true");
+                    if(debugging) {
+                        System.out.println("isConnectable = true");
+                    }
                 }
                 iterator.remove();
             }
@@ -55,19 +62,19 @@ public class NonBlockServer {
 
     private void handleAccept(SelectionKey key) throws IOException{
         ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-        SocketChannel clientSocketChannel = serverSocketChannel.accept();
-        clientSocketChannel.configureBlocking(false);
-        clientSocketChannel.register(key.selector(),SelectionKey.OP_READ, clientSocketChannel);
+        SocketChannel socketChannel = serverSocketChannel.accept();
+        socketChannel.configureBlocking(false);
+        socketChannel.register(key.selector(),SelectionKey.OP_READ, socketChannel);
 
     }
 
     private void handleRead(SelectionKey key) throws IOException{
-        SocketChannel clientSocketChannel = (SocketChannel) key.channel();
+        SocketChannel socketChannel = (SocketChannel) key.channel();
         ByteBuffer buffer = ByteBuffer.allocate(1024);
         String receiveData = "";
 
         while (true) {
-            long bytesRead = clientSocketChannel.read(buffer);
+            long bytesRead = socketChannel.read(buffer);
 
             if(bytesRead <= 0)
                 return;
@@ -75,7 +82,7 @@ public class NonBlockServer {
             buffer.flip();
 
             if(buffer.get(0) == '*'){
-                clientSocketChannel.close();
+                socketChannel.close();
                 return;
             }
 
@@ -83,20 +90,34 @@ public class NonBlockServer {
                 char c = (char)buffer.get();
                 receiveData += c;
             }
-            System.out.println(receiveData + "\n");
+            if(debugging) {
+                System.out.println(receiveData + "\n");
+            }
             buffer.clear();
             Request request = new Request(receiveData);
             if(request.isValidRequest()) {
                 //response according to the message received
                 Processor processor = new Processor(request, path);
-                buffer.put(processor.getResponse().toString().getBytes());
+
+                String output = processor.getResponse().toString();
+                if(debugging){
+                    System.out.println(output);
+                }
+                buffer.put(output.getBytes());
             } else {
+                if(debugging) {
+                    System.out.println("HTTP/1.0 400 Bad Request");
+                }
                 buffer.put("HTTP/1.0 400 Bad Request".getBytes());
             }
             buffer.flip();
-            clientSocketChannel.write(buffer);
+            socketChannel.write(buffer);
             buffer.clear();
         }
+    }
+
+    public void setDebugging(Boolean debugging){
+        this.debugging = debugging;
     }
 
     public void setPort(int port){

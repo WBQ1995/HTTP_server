@@ -20,6 +20,7 @@ public class httpfs {
 
         List<String> parameters = Arrays.asList(args);
         if(parameters.contains("-v")){
+            server.setDebugging(true);
             System.out.println("Prints debugging messages.");
         }
         if(parameters.contains("-p")){
