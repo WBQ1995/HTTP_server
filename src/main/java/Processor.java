@@ -54,16 +54,20 @@ public class Processor {
             showAllFiles();
             return;
         }
-
         path += request.getFilePath();
 
         try {
             readFile();
         } catch (FileNotFoundException ex ){
             response.setState("404 Not Found");
+            return;
         } catch (IOException ex){
             response.setState("400 Bad Request");
+            return;
         }
+        response.setHeader("Content-Type","text");
+        response.setHeader("Content-Disposition","inline");
+
     }
 
     private void showAllFiles(){
@@ -87,7 +91,7 @@ public class Processor {
         FileReader reader = new FileReader(file);
         BufferedReader bReader = new BufferedReader(reader);
         StringBuilder sb = new StringBuilder();
-        String line = "";
+        String line;
 
         while ((line = bReader.readLine()) != null) {
             sb.append(line + "\r\n");
