@@ -1,4 +1,5 @@
 import java.io.*;
+import javax.activation.MimetypesFileTypeMap;
 
 public class Processor {
 
@@ -6,6 +7,7 @@ public class Processor {
     private String path;
     private Request request;
     private Response response;
+    private Boolean overwrite = true;
 
     public Processor(Request request,String path){
         response = new Response();
@@ -32,12 +34,11 @@ public class Processor {
         return response;
     }
 
-    //TODO: DEAL WITH POST
     private void processPost(){
 
         path += request.getFilePath();
         try {
-            FileWriter fileWriter = new FileWriter(path,true);
+            FileWriter fileWriter = new FileWriter(path,overwrite);
             fileWriter.write(request.getBody());
             fileWriter.close();
             response.setState("200 OK");
@@ -65,9 +66,7 @@ public class Processor {
             response.setState("400 Bad Request");
             return;
         }
-        response.setHeader("Content-Type","text");
         response.setHeader("Content-Disposition","inline");
-
     }
 
     private void showAllFiles(){
@@ -98,5 +97,6 @@ public class Processor {
         }
         bReader.close();
         response.setBody(sb.toString());
+        response.setHeader("Content-Type", new MimetypesFileTypeMap().getContentType(file));
     }
 }
