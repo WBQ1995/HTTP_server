@@ -21,7 +21,7 @@ public class Processor {
 
     public Response getResponse(){
 
-        if(!request.getVersion().equals("HTTP/1.0")){
+        if(!request.getVersion().equals("HTTP/1.0") && !request.getVersion().equals("HTTP/1.1")){
             response.setState("505 HTTP Version Not Supported");
             return response;
         }
@@ -66,7 +66,6 @@ public class Processor {
             response.setState("400 Bad Request");
             return;
         }
-        response.setHeader("Content-Disposition","inline");
     }
 
     private void showAllFiles(){
@@ -98,5 +97,10 @@ public class Processor {
         bReader.close();
         response.setBody(sb.toString());
         response.setHeader("Content-Type", new MimetypesFileTypeMap().getContentType(file));
+        if(file.getName().endsWith("txt")){
+            response.setHeader("Content-Disposition","attachment");
+        } else if(file.getName().endsWith("html")){
+            response.setHeader("Content-Disposition","inline");
+        }
     }
 }

@@ -76,15 +76,12 @@ public class NonBlockServer {
         while (true) {
             long bytesRead = socketChannel.read(buffer);
 
-            if(bytesRead <= 0)
-                return;
-
-            buffer.flip();
-
-            if(buffer.get(0) == '*'){
-                socketChannel.close();
+            if(bytesRead <= 0) {
+                key.cancel();
                 return;
             }
+
+            buffer.flip();
 
             while (buffer.hasRemaining()){
                 char c = (char)buffer.get();
